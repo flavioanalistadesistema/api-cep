@@ -1,7 +1,5 @@
 <?php
-
+use App\Http\Controllers\CepController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/cep/{cep}', [CepController::class, 'consultar']);
