@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CepService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class CepController extends Controller
 {
+    protected $cepService;
+
+    public function __construct(CepService $cepService)
+    {
+        $this->cepService = $cepService;
+    }
+
     public function consultar($cep)
     {
-        $response = Http::get("https://viacep.com.br/ws/{$cep}/json/");
+        $result = $this->cepService->consultarCep($cep);
 
-        if ($response->failed()) {
-            return response()->json(['error' => 'CEP não encontrado'], 404);
+        if (isset($result['error'])) {
+            return response()->json(['error' => $result['error']], $result['status']);
         }
 
-        return response()->json($response->json());
+        return response()->json($result);
     }
 }
